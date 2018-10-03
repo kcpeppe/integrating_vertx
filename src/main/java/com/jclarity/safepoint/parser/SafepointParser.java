@@ -1,6 +1,7 @@
 package com.jclarity.safepoint.parser;
 
 import com.jclarity.safepoint.event.ApplicationRuntime;
+import com.jclarity.safepoint.event.EventSink;
 import com.jclarity.safepoint.event.JVMEvent;
 import com.jclarity.safepoint.event.JVMTermination;
 import com.jclarity.safepoint.event.Safepoint;
@@ -15,11 +16,11 @@ import java.util.logging.Logger;
 
 import static com.jclarity.safepoint.parser.SafepointRules.*;
 
-public class SafepointParser {
+public class SafepointParser implements EventSink<String> {
 
     private static final Logger LOGGER = Logger.getLogger(SafepointParser.class.getName());
 
-    private EventConsumer eventConsumer;
+    private EventConsumer outBox;
     private double currentTime = 0.0d;
     private double eventTime = -1.0d;
     private SafepointCause safepointCause = null;
@@ -35,14 +36,15 @@ public class SafepointParser {
         parseRules.put(JVM_TERMINATION, this::jvmTermination);
     }
 
-    public SafepointParser(EventConsumer eventConsumer) {
-        this.eventConsumer = eventConsumer;
+    public SafepointParser(EventConsumer outBox) {
+        this.outBox = outBox;
     }
 
     public void parse(String line) {
         Optional<AbstractMap.SimpleEntry<SafepointParseRule, SafepointLogEntry>> ruleToApply = parseRules.keySet().stream()
                 .map(rule -> new AbstractMap.SimpleEntry<>(rule, rule.parse(line)))
                 .filter(tuple -> tuple.getValue() != null)
+                .filter(tuple -> tuple.getValue().matched())
                 .findFirst();
 
         try {
@@ -79,11 +81,15 @@ public class SafepointParser {
     }
 
     private void record(JVMEvent event) {
-        eventConsumer.offer(event);
+        outBox.offer(event);
         eventTime = -1.0d;
         safepointCause = null;
     }
 
     private void noop() {}
 
+    @Override
+    public void accept(String line) {
+        this.parse(line);
+    }
 }

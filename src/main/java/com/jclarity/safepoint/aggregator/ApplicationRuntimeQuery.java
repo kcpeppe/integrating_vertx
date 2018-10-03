@@ -2,18 +2,16 @@ package com.jclarity.safepoint.aggregator;
 
 import com.jclarity.safepoint.event.ApplicationRuntime;
 import com.jclarity.safepoint.event.Safepoint;
-import com.jclarity.safepoint.event.SafepointCause;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class SafepointSummary {
+public class ApplicationRuntimeQuery {
 
     private double timeOfFirstEvent = Double.MAX_VALUE;
     private double timeOfLastEvent = 0.0d;
 
-    private double totalPauseTime = 0.0d;
-    private HashMap<SafepointCause,ArrayList<DataPoint>> pauseTimeSeries = new HashMap<>();
+    private double totalRunTime = 0.0d;
+    private ArrayList<DataPoint> runtimeSeries = new ArrayList<>();
 
     private void recordTimeOfEvent(double eventTime) {
         if ( eventTime < timeOfFirstEvent)
@@ -24,13 +22,11 @@ public class SafepointSummary {
 
     public void record(ApplicationRuntime event) {
         recordTimeOfEvent(event.getEventTime());
+        runtimeSeries.add( new DataPoint(event.getEventTime(), event.getDuration()));
+        totalRunTime += event.getDuration();
     }
 
     public void record(Safepoint event) {
         recordTimeOfEvent(event.getEventTime());
-        totalPauseTime += event.getDuration();
-        // record pause time by cause
-        // record ttsp
-        // count safepoint cause events (could be find lengths of pause arrays)
     }
 }

@@ -10,6 +10,6 @@ public abstract class JVMEvent {
         this.duration = duration;
     }
 
-    public double getTimeOfEvent() { return this.timeOfEvent; }
+    public double getEventTime() { return this.timeOfEvent; }
     public double getDuration() { return this.duration; }
 }

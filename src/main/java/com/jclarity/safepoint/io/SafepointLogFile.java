@@ -11,7 +11,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class SafepointLogFile {
+public class SafepointLogFile implements DataSource<String> {
 
     protected Path path;
     protected final LogSourceFormatMetaData metadata;
@@ -21,6 +21,7 @@ public class SafepointLogFile {
         this.metadata = new LogSourceFormatMetaData(path);
     }
 
+    @Override
     public Stream<String> stream() throws IOException {
         if ( metadata.isFile()) {
             return Files.lines(path);
