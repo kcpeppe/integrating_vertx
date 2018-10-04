@@ -1,6 +1,5 @@
 package com.jclarity.safepoint.event;
 
-import com.jclarity.safepoint.parser.EventConsumer;
 import com.jclarity.safepoint.parser.SafepointParser;
 
 import java.util.concurrent.ExecutorService;

@@ -1,27 +1,30 @@
 package com.jclarity.safepoint;
 
+import com.jclarity.safepoint.aggregator.AggregatorSet;
+import com.jclarity.safepoint.aggregator.ApplicationRuntimeSummary;
+import com.jclarity.safepoint.aggregator.SafepointSummary;
 import com.jclarity.safepoint.event.DataSourcePublisher;
+import com.jclarity.safepoint.event.EventBus;
+import com.jclarity.safepoint.event.EventSink;
 import com.jclarity.safepoint.event.EventSourceConsumer;
 import com.jclarity.safepoint.event.EventSourcePublisher;
-import com.jclarity.safepoint.event.EventSink;
-import com.jclarity.safepoint.event.EventBus;
 import com.jclarity.safepoint.event.JVMEvent;
-import com.jclarity.safepoint.event.Safepoint;
 import com.jclarity.safepoint.io.DataSource;
 import com.jclarity.safepoint.io.SafepointLogFile;
-import com.jclarity.safepoint.parser.SafepointParser;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Stream;
+import java.util.concurrent.TimeUnit;
 
 public class SafepointModel {
 
     private ExecutorService threadPool = Executors.newFixedThreadPool(3);
     final private Path safepointLogFile;
+    private SafepointSummary safepointSummary;
+    private ApplicationRuntimeSummary applicationRuntimeSummary;
 
     public SafepointModel( Path path) {
         this.safepointLogFile = path;
@@ -29,11 +32,16 @@ public class SafepointModel {
 
     public void load() {
 
+        AggregatorSet aggregators = new AggregatorSet();
+        safepointSummary = new SafepointSummary();
+        applicationRuntimeSummary = new ApplicationRuntimeSummary();
+        aggregators.addAggregator( safepointSummary);
+        aggregators.addAggregator(applicationRuntimeSummary);
+
         EventBus<JVMEvent> eventBus = new EventBus<>();
-        EventSink<JVMEvent> eventSink = event -> System.out.println(event);
-        EventSourceConsumer<JVMEvent> consumer = new EventSourceConsumer<>(eventBus,eventSink);
+        EventSourceConsumer<JVMEvent> queryEngine = new EventSourceConsumer<>(eventBus,aggregators);
         EventBus<String> parserInbox = new EventBus<>();
-        consumer.consume();
+        queryEngine.consume();
 
         EventSourcePublisher parserPublisher = new EventSourcePublisher(eventBus);
         parserPublisher.publish(parserInbox);
@@ -44,6 +52,7 @@ public class SafepointModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        queryEngine.awaitTermination();
 
     }
 
@@ -60,9 +69,11 @@ public class SafepointModel {
         });
     }
 
-    public static void main(String[] args) {
-        SafepointModel model = new SafepointModel(new File("logs/safepoint.log").toPath());
-        model.load();
+    public ApplicationRuntimeSummary getApplicationRuntimeSummary() {
+        return applicationRuntimeSummary;
     }
 
+    public SafepointSummary getSafepointSummary() {
+        return safepointSummary;
+    }
 }

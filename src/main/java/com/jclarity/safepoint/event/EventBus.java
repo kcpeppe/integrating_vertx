@@ -4,7 +4,7 @@ package com.jclarity.safepoint.event;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class EventBus<E> {
+public class EventBus<E> implements EventSink<E> {
 
     private LinkedBlockingQueue<E> transferQueue = new LinkedBlockingQueue<>();
 
@@ -22,5 +22,10 @@ public class EventBus<E> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void accept(E event) {
+        publish(event);
     }
 }

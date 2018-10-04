@@ -64,7 +64,7 @@ public class SafepointParser implements EventSink<String> {
 
     private void enteringSafepointRegion(SafepointLogEntry logEntry, String logLine) {
         this.eventTime = logEntry.getTimeOfEvent();
-        this.safepointCause = SafepointCause.valueOf(logEntry.getGroup(2));
+        this.safepointCause = SafepointCause.valueOf(logEntry.getGroup(1));
     }
 
     private void leavingSafepointRegion(SafepointLogEntry logEntry, String logLine) {

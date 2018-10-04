@@ -1,5 +1,7 @@
 package com.jclarity.safepoint.event;
 
+import com.jclarity.safepoint.aggregator.Aggregator;
+
 public class Safepoint extends JVMEvent {
 
     private final SafepointCause safepointCause;
@@ -16,5 +18,9 @@ public class Safepoint extends JVMEvent {
 
     public double getTimeToSafepoint() {
         return timeToSafepoint;
+    }
+
+    public void execute(Aggregator aggregator) {
+        aggregator.record(this);
     }
 }

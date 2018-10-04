@@ -5,20 +5,13 @@ import com.jclarity.safepoint.event.Safepoint;
 
 import java.util.ArrayList;
 
-public class ApplicationRuntimeQuery {
-
-    private double timeOfFirstEvent = Double.MAX_VALUE;
-    private double timeOfLastEvent = 0.0d;
+public class ApplicationRuntimeSummary extends Aggregator {
 
     private double totalRunTime = 0.0d;
     private ArrayList<DataPoint> runtimeSeries = new ArrayList<>();
 
-    private void recordTimeOfEvent(double eventTime) {
-        if ( eventTime < timeOfFirstEvent)
-            timeOfFirstEvent = eventTime;
-        if ( eventTime > timeOfLastEvent)
-            timeOfLastEvent = eventTime;
-    }
+    public double getTotalRunTime() { return totalRunTime; }
+    public ArrayList<DataPoint> getRuntimeSeries() { return runtimeSeries; }
 
     public void record(ApplicationRuntime event) {
         recordTimeOfEvent(event.getEventTime());
@@ -28,5 +21,11 @@ public class ApplicationRuntimeQuery {
 
     public void record(Safepoint event) {
         recordTimeOfEvent(event.getEventTime());
+    }
+
+    public String toString() {
+        return "Application Runtime Summary\n---------------------------\nTotal Runtime: "
+                + getTotalRunTime()
+                + "\n===========================\n";
     }
 }

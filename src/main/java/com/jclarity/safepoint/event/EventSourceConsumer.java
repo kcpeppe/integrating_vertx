@@ -1,7 +1,5 @@
 package com.jclarity.safepoint.event;
 
-import com.jclarity.safepoint.io.DataSource;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -22,9 +20,18 @@ public class EventSourceConsumer<T> {
         singleThread.submit(() -> {
             T event;
             while ( (event = eventBus.read()) != null) {
+                if ( event instanceof JVMTermination) break;
                 eventSink.accept(event);
             }
         });
         singleThread.shutdown();
+    }
+
+    public void awaitTermination() {
+        try {
+            singleThread.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
