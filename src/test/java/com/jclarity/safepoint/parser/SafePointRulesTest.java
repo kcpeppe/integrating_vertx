@@ -23,7 +23,7 @@ public class SafePointRulesTest {
         SafepointLogEntry entry = ENTERING_SAFEPOINT_REGION.parse("[0.691s][info][safepoint    ] Entering safepoint region: RevokeBias");
         assertTrue(entry.matched(),"rule didn't capture log entry");
         assertEquals(0.691d, entry.getTimeOfEvent(), "time of event mismatch");
-        assertEquals(SafepointCause.RevokeBias, SafepointCause.valueOf(entry.getGroup(1)), "Safepoint reason mismatch");
+        assertEquals(SafepointCause.RevokeBias, SafepointCause.valueOf(entry.getGroup(1)), "SafepointView reason mismatch");
     }
 
     @Test

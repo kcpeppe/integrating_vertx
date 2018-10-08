@@ -26,6 +26,8 @@ public class ApplicationRuntimeSummary extends Aggregator {
     public String toString() {
         return "Application Runtime Summary\n---------------------------\nTotal Runtime: "
                 + getTotalRunTime()
+                + "\nNumber of events: "
+                + getRuntimeSeries().size()
                 + "\n===========================\n";
     }
 }

@@ -52,6 +52,7 @@ public class SafepointModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        dataSourcePublisher.awaitCompletion(1,TimeUnit.SECONDS);
         queryEngine.awaitTermination();
 
     }

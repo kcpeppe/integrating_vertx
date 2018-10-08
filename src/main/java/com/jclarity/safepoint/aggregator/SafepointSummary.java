@@ -24,6 +24,9 @@ public class SafepointSummary extends Aggregator {
     public double getLongestPause() { return longestPause; }
     public double getTtsp() { return ttsp; }
     public double getLongestTTSP() { return longestTTSP; }
+    public int getNumberOfPauseEvents() {
+        return pauseTimeSeries.values().stream().mapToInt(ArrayList::size).sum();
+    }
 
     private void countSafepointCause( SafepointCause cause) {
         int value = safepointCauseCounts.computeIfAbsent(cause, aCause -> 0);
