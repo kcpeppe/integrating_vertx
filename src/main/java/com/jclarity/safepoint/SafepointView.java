@@ -23,6 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -36,7 +37,7 @@ public class SafepointView extends Application {
     public void start(Stage stage) {
         stage.setTitle("Tabs");
         Group root = new Group();
-        Scene scene = new Scene(root, 400, 250, Color.WHITE);
+        Scene scene = new Scene(root, 1200, 600, Color.WHITE);
 
         TabPane tabPane = new TabPane();
         openModel(tabPane);
@@ -186,12 +187,16 @@ public class SafepointView extends Application {
 
         Tab tab = new Tab();
         tab.setText("Safepoint Summary");
-        HBox hbox = new HBox();
-        hbox.getChildren().add(table);
-        //chart.prefWidthProperty().bind(tabPane.widthProperty());
-        //chart.prefHeightProperty().bind(tabPane.heightProperty());
-        hbox.setAlignment(Pos.CENTER);
-        tab.setContent(hbox);
+        VBox vbox = new VBox();
+        vbox.setStyle("-fx-padding: 10;" +
+                "-fx-border-style: solid inside;" +
+                "-fx-border-width: 2;" +
+                "-fx-border-insets: 5;" +
+                "-fx-border-radius: 5;" +
+                "-fx-border-color: blue;");
+        vbox.getChildren().add(table);
+        vbox.setAlignment(Pos.TOP_LEFT);
+        tab.setContent(vbox);
         tabPane.getTabs().add(tab);
     }
 
@@ -206,96 +211,8 @@ public class SafepointView extends Application {
 
         }
 
-        public String getMeasure() { return measure.get(); }
-        public String getLabel() { return label.get(); }
-
+        // found by reflection
         public StringProperty measureProperty() { return measure; }
         public StringProperty labelProperty() { return label; }
-
-
     }
-        /*
-
-        public static TableColumn<Person, Integer> getIdColumn()
-23
-    {
-24
-        TableColumn<Person, Integer> idCol = new TableColumn<>("Id");
-25
-        PropertyValueFactory<Person, Integer> idCellValueFactory = new PropertyValueFactory<>("id");
-26
-        idCol.setCellValueFactory(idCellValueFactory);
-27
-        return idCol;
-28
-    }
-
-        // Create a TableView with a list of persons
-20
-        TableView<Person> table = new TableView<>();
-21
-        // Add rows to the TableView
-22
-        table.getItems().addAll(TableViewHelper.getPersonList());
-23
-        // Add columns to the TableView
-24
-        table.getColumns().addAll(TableViewHelper.getIdColumn(), TableViewHelper.getFirstNameColumn(),
-25
-            TableViewHelper.getLastNameColumn(),TableViewHelper.getStreetColumn(),
-26
-            TableViewHelper.getZipCodeColumn(), TableViewHelper.getCityColumn(), TableViewHelper.getCountryColumn());
-27
-
-28
-        // Set the column resize policy to constrained resize policy
-29
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-30
-        // Set the Placeholder for an empty table
-31
-        table.setPlaceholder(new Label("No visible columns and/or data exist."));
-32
-
-33
-        // Create the VBox
-34
-        VBox root = new VBox();
-35
-        // Add the Table to the VBox
-36
-        root.getChildren().add(table);
-37
-        // Set the Padding and Border for the VBox
-38
-        root.setStyle("-fx-padding: 10;" +
-39
-                "-fx-border-style: solid inside;" +
-40
-                "-fx-border-width: 2;" +
-41
-                "-fx-border-insets: 5;" +
-42
-                "-fx-border-radius: 5;" +
-43
-                "-fx-border-color: blue;");
-44
-
-45
-        // Create the Scene
-46
-        Scene scene = new Scene(root);
-47
-        // Add the Scene to the Stage
-48
-        stage.setScene(scene);
-49
-        // Set the Title of the Stage
-50
-        stage.setTitle("A simple TableView Example");
-51
-        // Display the Stage
-52
-        stage.show();
-         */
 }

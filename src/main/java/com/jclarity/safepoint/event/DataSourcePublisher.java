@@ -16,7 +16,7 @@ public class DataSourcePublisher<T> {
         this.eventBus = eventBus;
     }
 
-    public void publish(DataSource<T> dataSource) throws IOException {
+    public void publish(DataSource<T> dataSource) {
         singleThread = Executors.newSingleThreadExecutor();
         singleThread.submit(() -> {
             try {
@@ -36,7 +36,4 @@ public class DataSourcePublisher<T> {
         }
     }
 
-    public void shutdown() {
-        singleThread.shutdownNow();
-    }
 }

@@ -4,7 +4,6 @@ import com.jclarity.safepoint.parser.SafepointParser;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class EventSourcePublisher {
 
@@ -24,17 +23,5 @@ public class EventSourcePublisher {
             }
         });
         singleThread.shutdown();
-    }
-
-    public void awaitCompletion(int waitTime, TimeUnit units) {
-        try {
-            singleThread.awaitTermination(waitTime, units);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void shutdown() {
-        singleThread.shutdownNow();
     }
 }

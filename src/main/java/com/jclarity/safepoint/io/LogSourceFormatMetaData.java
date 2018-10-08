@@ -75,10 +75,6 @@ public class LogSourceFormatMetaData {
     }
 
 
-    public int getNumberOfFiles() {
-        return this.numberOfFiles;
-    }
-
     public boolean isZip() {
         return this.zip;
     }

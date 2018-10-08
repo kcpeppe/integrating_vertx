@@ -1,7 +1,5 @@
 package com.jclarity.safepoint.io;
 
-import java.util.regex.Pattern;
-
 public class Decorators {
 
     private double eventTime;

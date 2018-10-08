@@ -12,7 +12,6 @@ import com.jclarity.safepoint.event.JVMEvent;
 import com.jclarity.safepoint.io.DataSource;
 import com.jclarity.safepoint.io.SafepointLogFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
@@ -47,27 +46,10 @@ public class SafepointModel {
         parserPublisher.publish(parserInbox);
         SafepointLogFile logFile = new SafepointLogFile(safepointLogFile);
         DataSourcePublisher<String> dataSourcePublisher = new DataSourcePublisher<>(parserInbox);
-        try {
-            dataSourcePublisher.publish(logFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        dataSourcePublisher.publish(logFile);
         dataSourcePublisher.awaitCompletion(1,TimeUnit.SECONDS);
         queryEngine.awaitTermination();
 
-    }
-
-    private void startAggregators() {}
-
-    private void startParser() {}
-
-    private void load(DataSource<String> dataSource, EventSink<String> eventSink) {
-        threadPool.submit( () -> {
-            try {
-                dataSource.stream().forEach(eventSink::accept);
-            } catch (IOException ioe) {
-            }
-        });
     }
 
     public ApplicationRuntimeSummary getApplicationRuntimeSummary() {
