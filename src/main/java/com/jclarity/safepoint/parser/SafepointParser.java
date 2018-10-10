@@ -12,13 +12,10 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.logging.Logger;
 
 import static com.jclarity.safepoint.parser.SafepointRules.*;
 
 public class SafepointParser implements EventSink<String> {
-
-    private static final Logger LOGGER = Logger.getLogger(SafepointParser.class.getName());
 
     private EventConsumer outbox;
     private double currentTime = 0.0d;
@@ -57,10 +54,11 @@ public class SafepointParser implements EventSink<String> {
             if (ruleToApply.isPresent() && ruleToApply.get().getValue().matched()) {
                 parseRules.get(ruleToApply.get().getKey()).accept(ruleToApply.get().getValue(), line);
             } else {
-                LOGGER.warning("Missed: " + line);
+                System.out.println("Missed: " + line);
             }
         } catch (Throwable t) {
-            LOGGER.throwing(this.getClass().getName(), "process", t);
+            System.out.println(t.getMessage());
+            t.printStackTrace();
         }
     }
 

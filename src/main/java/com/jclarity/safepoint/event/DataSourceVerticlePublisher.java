@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 
 public class DataSourceVerticlePublisher<T> extends AbstractVerticle implements DataSourcePublisher<T> {
 
-
     private String outbox;
 
     public DataSourceVerticlePublisher(String outbox) {
@@ -22,9 +21,11 @@ public class DataSourceVerticlePublisher<T> extends AbstractVerticle implements 
     public void publish(DataSource<T> dataSource) {
             try {
                 dataSource.stream().forEach(entry -> vertx.eventBus().publish(outbox, entry));
+                vertx.eventBus().publish(outbox,dataSource.eosToken());
             } catch(IOException ioe) {
                 System.out.println(ioe.getMessage());
             }
+            completed.countDown();
     }
 
     CountDownLatch completed = new CountDownLatch(1);

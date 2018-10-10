@@ -2,15 +2,17 @@ package com.jclarity.safepoint.io;
 
 public class Decorators {
 
-    private double eventTime;
-    private String level;
-    private String tag;
+    private double eventTime = 0.0d;
+    private String level = "";
+    private String tag = "";
 
     public Decorators(String line) {
         String[] parts = line.split("\\]");
-        eventTime = Double.parseDouble(parts[0].replace('[',' ').replace('s',' ').trim());
-        level = parts[1].replace('[',' ').trim();
-        tag = parts[2].replace('[',' ').trim();
+        if (parts.length == 4) {
+            eventTime = Double.parseDouble(parts[0].replace('[', ' ').replace('s', ' ').trim());
+            level = parts[1].replace('[', ' ').trim();
+            tag = parts[2].replace('[', ' ').trim();
+        }
     }
 
     public double getEventTime() {

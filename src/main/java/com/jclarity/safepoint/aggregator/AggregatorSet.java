@@ -52,10 +52,6 @@ public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEven
         }
     }
 
-    private void processTerminationEvent() {
-        completed.countDown();
-    }
-
     @Override
     public void start() {
         try {
@@ -66,10 +62,12 @@ public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEven
                             if ( ! (event instanceof JVMTermination)) {
                                 this.accept(event);
                             } else {
-                                processTerminationEvent();
+                                completed.countDown();
                             }
                         } catch (Throwable t) {
                             System.out.println(t.getMessage());
+                        } finally {
+                            completed.countDown();
                         }
                     });
             deployed.countDown();

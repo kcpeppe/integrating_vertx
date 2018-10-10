@@ -11,4 +11,8 @@ public class JVMTermination extends JVMEvent {
     public void execute(Aggregator aggregator) {
         aggregator.record(this);
     }
+
+    public String toString() {
+        return "JVMTermination";
+    }
 }

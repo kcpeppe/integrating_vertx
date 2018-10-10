@@ -2,6 +2,7 @@ package com.jclarity.safepoint.parser;
 
 import org.junit.jupiter.api.Test;
 
+import static com.jclarity.safepoint.io.SafepointLogFile.END_OF_FILE_TOKEN;
 import static com.jclarity.safepoint.parser.SafepointRules.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,7 +34,8 @@ public class SafepointParseRuleTest {
             APPLICATION_TIME,
             ENTERING_SAFEPOINT_REGION,
             LEAVING_SAFEPOINT_REGION,
-            SAFEPOINT_DETAILS
+            SAFEPOINT_DETAILS,
+            JVM_TERMINATION
     };
 
 
@@ -42,8 +44,8 @@ public class SafepointParseRuleTest {
         {"[0.648s][info][safepoint    ] Application time: 0.0000172 seconds"},
         {"[0.648s][info][safepoint    ] Entering safepoint region: RevokeBias"},
         {"[0.648s][info][safepoint    ] Leaving safepoint region"},
-        {"[0.648s][info][safepoint    ] Total time for which application threads were stopped: 0.0000313 seconds, Stopping threads took: 0.0000061 seconds"}
-
+        {"[0.648s][info][safepoint    ] Total time for which application threads were stopped: 0.0000313 seconds, Stopping threads took: 0.0000061 seconds"},
+        { END_OF_FILE_TOKEN}
     };
 
 }

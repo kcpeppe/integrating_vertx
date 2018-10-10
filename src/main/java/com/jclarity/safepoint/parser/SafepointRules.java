@@ -1,5 +1,7 @@
 package com.jclarity.safepoint.parser;
 
+import static com.jclarity.safepoint.io.SafepointLogFile.END_OF_FILE_TOKEN;
+
 public interface SafepointRules extends Tokens {
 
     //[0.691s][info][safepoint    ] Application time: 0.0008500 seconds
@@ -15,5 +17,5 @@ public interface SafepointRules extends Tokens {
     SafepointParseRule SAFEPOINT_DETAILS = new SafepointParseRule("Total safepoint time",
             "Total time for which application threads were stopped: " + TIME_STAMP + ", Stopping threads took: " + TIME_STAMP  + "$");
 
-    SafepointParseRule JVM_TERMINATION = new SafepointParseRule("JVM Termination", "TERMINATION");
+    SafepointParseRule JVM_TERMINATION = new SafepointParseRule("JVM Termination", END_OF_FILE_TOKEN);
 }

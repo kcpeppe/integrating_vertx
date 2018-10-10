@@ -23,4 +23,8 @@ public class Safepoint extends JVMEvent {
     public void execute(Aggregator aggregator) {
         aggregator.record(this);
     }
+
+    public String toString() {
+        return "Safepoint";
+    }
 }

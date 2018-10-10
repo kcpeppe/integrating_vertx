@@ -1,14 +1,13 @@
 package com.jclarity.safepoint.event;
 
 import com.jclarity.safepoint.io.DataSource;
-import io.vertx.core.AbstractVerticle;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class DataSourceEventBusPublisher<T> extends AbstractVerticle implements DataSourcePublisher<T> {
+public class DataSourceEventBusPublisher<T> implements DataSourcePublisher<T> {
 
     private EventBus<T> eventBus;
     private ExecutorService singleThread;

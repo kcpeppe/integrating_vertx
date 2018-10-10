@@ -13,12 +13,19 @@ import java.util.zip.ZipInputStream;
 
 public class SafepointLogFile implements DataSource<String> {
 
+    public static final String END_OF_FILE_TOKEN = "END_OF_FILE";
+
     protected Path path;
     protected final LogSourceFormatMetaData metadata;
 
     public SafepointLogFile(Path path) {
         this.path = path;
         this.metadata = new LogSourceFormatMetaData(path);
+    }
+
+    @Override
+    public String eosToken() {
+        return END_OF_FILE_TOKEN;
     }
 
     @Override

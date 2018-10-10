@@ -4,12 +4,12 @@ import com.jclarity.safepoint.aggregator.AggregatorSet;
 import com.jclarity.safepoint.aggregator.ApplicationRuntimeSummary;
 import com.jclarity.safepoint.aggregator.SafepointSummary;
 import com.jclarity.safepoint.event.DataSourceEventBusPublisher;
-import com.jclarity.safepoint.event.DataSourcePublisher;
 import com.jclarity.safepoint.event.DataSourceVerticlePublisher;
 import com.jclarity.safepoint.event.EventBus;
 import com.jclarity.safepoint.event.EventSourceConsumer;
 import com.jclarity.safepoint.event.EventSourcePublisher;
 import com.jclarity.safepoint.event.JVMEvent;
+import com.jclarity.safepoint.event.JVMEventCodec;
 import com.jclarity.safepoint.io.SafepointLogFile;
 import com.jclarity.safepoint.parser.SafepointParser;
 import io.vertx.core.Vertx;
@@ -55,6 +55,7 @@ public class SafepointModel {
 
     public void loadVertx() {
         Vertx vertx = Vertx.vertx();
+        vertx.eventBus().registerDefaultCodec( JVMEvent.class, new JVMEventCodec());
         AggregatorSet aggregators = new AggregatorSet("aggregator-inbox");
         safepointSummary = new SafepointSummary();
         applicationRuntimeSummary = new ApplicationRuntimeSummary();
@@ -70,6 +71,7 @@ public class SafepointModel {
         SafepointLogFile logFile = new SafepointLogFile(safepointLogFile);
         DataSourceVerticlePublisher<String> dataSourcePublisher = new DataSourceVerticlePublisher<>("parser-inbox");
         vertx.deployVerticle(dataSourcePublisher);
+        dataSourcePublisher.awaitDeployment();
         dataSourcePublisher.publish(logFile);
         dataSourcePublisher.awaitCompletion();
         aggregators.awaitCompletion();
