@@ -3,16 +3,17 @@ package com.jclarity.safepoint;
 import com.jclarity.safepoint.aggregator.AggregatorSet;
 import com.jclarity.safepoint.aggregator.ApplicationRuntimeSummary;
 import com.jclarity.safepoint.aggregator.SafepointSummary;
+import com.jclarity.safepoint.event.DataSourceEventBusPublisher;
 import com.jclarity.safepoint.event.DataSourcePublisher;
+import com.jclarity.safepoint.event.DataSourceVerticlePublisher;
 import com.jclarity.safepoint.event.EventBus;
-import com.jclarity.safepoint.event.EventSink;
 import com.jclarity.safepoint.event.EventSourceConsumer;
 import com.jclarity.safepoint.event.EventSourcePublisher;
 import com.jclarity.safepoint.event.JVMEvent;
-import com.jclarity.safepoint.io.DataSource;
 import com.jclarity.safepoint.io.SafepointLogFile;
+import com.jclarity.safepoint.parser.SafepointParser;
+import io.vertx.core.Vertx;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,11 +46,33 @@ public class SafepointModel {
         EventSourcePublisher parserPublisher = new EventSourcePublisher(eventBus);
         parserPublisher.publish(parserInbox);
         SafepointLogFile logFile = new SafepointLogFile(safepointLogFile);
-        DataSourcePublisher<String> dataSourcePublisher = new DataSourcePublisher<>(parserInbox);
+        DataSourceEventBusPublisher<String> dataSourcePublisher = new DataSourceEventBusPublisher<>(parserInbox);
         dataSourcePublisher.publish(logFile);
-        dataSourcePublisher.awaitCompletion(1,TimeUnit.SECONDS);
+        dataSourcePublisher.awaitCompletion();
         queryEngine.awaitTermination();
 
+    }
+
+    public void loadVertx() {
+        Vertx vertx = Vertx.vertx();
+        AggregatorSet aggregators = new AggregatorSet("aggregator-inbox");
+        safepointSummary = new SafepointSummary();
+        applicationRuntimeSummary = new ApplicationRuntimeSummary();
+        aggregators.addAggregator( safepointSummary);
+        aggregators.addAggregator(applicationRuntimeSummary);
+        vertx.deployVerticle(aggregators);
+        aggregators.awaitDeployment();
+
+        EventSourcePublisher publisher = new EventSourcePublisher("parser-inbox", "aggregator-inbox",new SafepointParser());
+        vertx.deployVerticle(publisher);
+        publisher.awaitDeployment();
+
+        SafepointLogFile logFile = new SafepointLogFile(safepointLogFile);
+        DataSourceVerticlePublisher<String> dataSourcePublisher = new DataSourceVerticlePublisher<>("parser-inbox");
+        vertx.deployVerticle(dataSourcePublisher);
+        dataSourcePublisher.publish(logFile);
+        dataSourcePublisher.awaitCompletion();
+        aggregators.awaitCompletion();
     }
 
     public ApplicationRuntimeSummary getApplicationRuntimeSummary() {

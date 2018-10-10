@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+
 public class EventSourceConsumer<T> {
 
     private EventBus<T> eventBus;
@@ -20,8 +21,8 @@ public class EventSourceConsumer<T> {
         singleThread.submit(() -> {
             T event;
             while ( (event = eventBus.read()) != null) {
-                if ( event instanceof JVMTermination) break;
                 eventSink.accept(event);
+                if ( event instanceof JVMTermination) break;
             }
         });
         singleThread.shutdown();

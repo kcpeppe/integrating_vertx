@@ -59,7 +59,7 @@ public class SafepointView extends Application {
     SafepointModel model;
     private void openModel(TabPane tabPane) {
         model = new SafepointModel(new File("./logs/safepoint.log").toPath());
-        model.load();
+        model.loadVertx();
 
         buildSafepointSummaryTab(tabPane); //todo
 

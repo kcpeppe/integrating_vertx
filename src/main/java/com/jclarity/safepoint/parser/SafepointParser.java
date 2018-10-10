@@ -20,7 +20,7 @@ public class SafepointParser implements EventSink<String> {
 
     private static final Logger LOGGER = Logger.getLogger(SafepointParser.class.getName());
 
-    private EventConsumer outBox;
+    private EventConsumer outbox;
     private double currentTime = 0.0d;
     private double eventTime = -1.0d;
     private SafepointCause safepointCause = null;
@@ -36,8 +36,14 @@ public class SafepointParser implements EventSink<String> {
         parseRules.put(JVM_TERMINATION, this::jvmTermination);
     }
 
+    public SafepointParser() {}
+
     public SafepointParser(EventConsumer outBox) {
-        this.outBox = outBox;
+        this.outbox = outBox;
+    }
+
+    public void setEventConsumer(EventConsumer outbox) {
+        this.outbox = outbox;
     }
 
     public void parse(String line) {
@@ -81,7 +87,7 @@ public class SafepointParser implements EventSink<String> {
     }
 
     private void record(JVMEvent event) {
-        outBox.offer(event);
+        outbox.offer(event);
         eventTime = -1.0d;
         safepointCause = null;
     }
