@@ -8,7 +8,6 @@ import io.vertx.core.AbstractVerticle;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
-//public class AggregatorSet implements EventSink<JVMEvent> {
 public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEvent> {
 
     private final ArrayList<Aggregator> aggregators = new ArrayList<>();
@@ -59,20 +58,19 @@ public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEven
                     consumer(inbox, message -> {
                         try {
                             JVMEvent event = (JVMEvent)message.body();
-                            if ( ! (event instanceof JVMTermination)) {
-                                this.accept(event);
-                            } else {
+                            if ( event instanceof JVMTermination) {
                                 completed.countDown();
+                            } else {
+                                this.accept(event);
                             }
                         } catch (Throwable t) {
                             System.out.println(t.getMessage());
-                        } finally {
-                            completed.countDown();
                         }
                     });
             deployed.countDown();
         } catch (Throwable t) {
             System.out.println(t.getMessage());
+            completed.countDown();
         }
     }
 }

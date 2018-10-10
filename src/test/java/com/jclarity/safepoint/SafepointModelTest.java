@@ -12,7 +12,7 @@ public class SafepointModelTest {
 
     @Test
     public void testSafepointModel() {
-        SafepointModel model = new SafepointModel(new File("logs/safepoint.log").toPath());
+        SafepointEventBusModel model = new SafepointEventBusModel(new File("logs/safepoint.log").toPath());
         model.load();
         ApplicationRuntimeSummary runtimeSummary = model.getApplicationRuntimeSummary();
         SafepointSummary safepointSummary = model.getSafepointSummary();
