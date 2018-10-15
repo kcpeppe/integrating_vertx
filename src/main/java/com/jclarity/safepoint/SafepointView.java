@@ -12,7 +12,7 @@ public class SafepointView extends SafepointSharedView {
         launch();
     }
 
-    SafepointEventBusModel model;
+    private SafepointEventBusModel model;
     void openModel(TabPane tabPane) {
         model = new SafepointEventBusModel(new File("./logs/safepoint.log").toPath());
         model.load();

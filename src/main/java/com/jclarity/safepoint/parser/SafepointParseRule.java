@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 
 public class SafepointParseRule {
 
-    final private String name;
-    final private Pattern pattern;
+    private final String name;
+    private final Pattern pattern;
 
     public SafepointParseRule(String name, String regex) {
         this.name = name;
