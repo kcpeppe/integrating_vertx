@@ -4,9 +4,10 @@ import com.jclarity.safepoint.event.EventSink;
 import com.jclarity.safepoint.event.JVMEvent;
 import com.jclarity.safepoint.event.JVMTermination;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
+import io.vertx.core.eventbus.MessageConsumer;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
 
 public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEvent> {
 
@@ -22,12 +23,8 @@ public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEven
 
     @Override
     public void accept(JVMEvent event) {
-        aggregators.stream().forEach(event::execute);
+        aggregators.forEach(event::execute);
     }
-
-    //Vert.x
-    private CountDownLatch deployed = new CountDownLatch(1);
-    private CountDownLatch completed = new CountDownLatch(1);
 
     private String inbox;
 
@@ -35,42 +32,21 @@ public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEven
         this.inbox = inbox;
     }
 
-    public void awaitDeployment() {
-        try {
-            deployed.await();
-        } catch (InterruptedException ie) {
-            System.out.println(ie.getMessage());
-        }
-    }
-
-    public void awaitCompletion() {
-        try {
-            completed.await();
-        } catch (InterruptedException ie) {
-            System.out.println(ie.getMessage());
-        }
-    }
-
     @Override
-    public void start() {
-        try {
-            vertx.eventBus().
-                    consumer(inbox, message -> {
-                        try {
-                            JVMEvent event = (JVMEvent)message.body();
-                            if ( event instanceof JVMTermination) {
-                                completed.countDown();
-                            } else {
-                                this.accept(event);
-                            }
-                        } catch (Throwable t) {
-                            System.out.println(t.getMessage());
-                        }
-                    });
-            deployed.countDown();
-        } catch (Throwable t) {
-            System.out.println(t.getMessage());
-            completed.countDown();
-        }
+    public void start(Future<Void> done) {
+        MessageConsumer<JVMEvent> consumer = vertx.eventBus().consumer(inbox);
+        consumer.handler(message -> {
+            try {
+                JVMEvent event = message.body();
+                if (event instanceof JVMTermination) {
+                    // Send the termination signal
+                    vertx.eventBus().publish("termination", "Done");
+                } else {
+                    this.accept(event);
+                }
+            } catch (Exception t) {
+                System.out.println(t.getMessage());
+            }
+        }).completionHandler(x -> done.complete());
     }
 }

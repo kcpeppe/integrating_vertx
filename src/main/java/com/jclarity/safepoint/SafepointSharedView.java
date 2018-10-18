@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class SafepointSharedView extends Application {
 
@@ -91,7 +92,7 @@ public abstract class SafepointSharedView extends Application {
 
     }
 
-    BarChart<Number, Number> buildBarChart(String title, HashMap<SafepointCause, Integer> safepointCauseCounts) {
+    BarChart<Number, Number> buildBarChart(String title, Map<SafepointCause, Integer> safepointCauseCounts) {
         CategoryAxis xAxis = new CategoryAxis();
         xAxis.setLabel("Safepoint causes");
         NumberAxis yAxis = new NumberAxis();
@@ -126,7 +127,7 @@ public abstract class SafepointSharedView extends Application {
         return chart;
     }
 
-    ScatterChart<Number,Number> buildScatterChart(String title, String xAxisLabel, String yAxisLabel, HashMap<SafepointCause,ArrayList<DataPoint>> seriesData) {
+    ScatterChart<Number,Number> buildScatterChart(String title, String xAxisLabel, String yAxisLabel, Map<SafepointCause,ArrayList<DataPoint>> seriesData) {
         NumberAxis xAxis = new NumberAxis();
         xAxis.setLabel(xAxisLabel);
         NumberAxis yAxis = new NumberAxis();
@@ -134,9 +135,7 @@ public abstract class SafepointSharedView extends Application {
         ScatterChart<Number,Number> chart = new ScatterChart<>(xAxis,yAxis);
         chart.setTitle(title);
 
-        seriesData.keySet().stream().forEach( key -> {
-            chart.getData().add(buildXYChartSeries(key.name(),seriesData.get(key)));
-        });
+        seriesData.keySet().forEach(key -> chart.getData().add(buildXYChartSeries(key.name(),seriesData.get(key))));
         return chart;
     }
 

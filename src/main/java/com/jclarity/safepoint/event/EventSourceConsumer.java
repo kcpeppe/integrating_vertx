@@ -9,7 +9,7 @@ public class EventSourceConsumer<T> {
 
     private EventBus<T> eventBus;
     private EventSink<T> eventSink;
-    ExecutorService singleThread = Executors.newSingleThreadExecutor();
+    private ExecutorService singleThread = Executors.newSingleThreadExecutor();
 
 
     public EventSourceConsumer(EventBus<T> eventBus, EventSink<T> eventSink) {
@@ -33,6 +33,7 @@ public class EventSourceConsumer<T> {
             singleThread.awaitTermination(1, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 }

@@ -6,6 +6,7 @@ import com.jclarity.safepoint.event.SafepointCause;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SafepointSummary extends Aggregator {
 
@@ -15,11 +16,11 @@ public class SafepointSummary extends Aggregator {
     private double longestTTSP = 0.0d;
     private HashMap<SafepointCause,ArrayList<DataPoint>> pauseTimeSeries = new HashMap<>();
     private HashMap<SafepointCause,ArrayList<DataPoint>> ttspTimeSeries = new HashMap<>();
-    public HashMap<SafepointCause,Integer> safepointCauseCounts = new HashMap<>();
+    private Map<SafepointCause,Integer> safepointCauseCounts = new HashMap<>();
 
-    public HashMap<SafepointCause,Integer> getSafepointCauseCounts() { return safepointCauseCounts; }
-    public HashMap<SafepointCause,ArrayList<DataPoint>> getPauseTimeSeries() { return pauseTimeSeries; }
-    public HashMap<SafepointCause,ArrayList<DataPoint>> getTtspTimeSeries() { return ttspTimeSeries; }
+    public Map<SafepointCause,Integer> getSafepointCauseCounts() { return safepointCauseCounts; }
+    public Map<SafepointCause,ArrayList<DataPoint>> getPauseTimeSeries() { return pauseTimeSeries; }
+    public Map<SafepointCause,ArrayList<DataPoint>> getTtspTimeSeries() { return ttspTimeSeries; }
     public double getTotalPauseTime() { return totalPauseTime; }
     public double getLongestPause() { return longestPause; }
     public double getTtsp() { return ttsp; }
@@ -56,14 +57,14 @@ public class SafepointSummary extends Aggregator {
     }
 
     public String toString() {
-        String summary = "SafepointSummary\n----------------\nTotal Pause Time: " + getTotalPauseTime();
-        summary += "\nlongest pause: " + getLongestPause();
-        summary += "\nTotal TTSP: " + getTtsp();
-        summary += "\nlongest TTSP: " + getLongestTTSP();
-        HashMap<SafepointCause,Integer> causeCounts = getSafepointCauseCounts();
-        summary += "\nCause:Count";
+        StringBuilder summary = new StringBuilder("SafepointSummary\n----------------\nTotal Pause Time: " + getTotalPauseTime());
+        summary.append("\nlongest pause: ").append(getLongestPause());
+        summary.append("\nTotal TTSP: ").append(getTtsp());
+        summary.append("\nlongest TTSP: ").append(getLongestTTSP());
+        Map<SafepointCause,Integer> causeCounts = getSafepointCauseCounts();
+        summary.append("\nCause:Count");
         for ( SafepointCause cause : causeCounts.keySet()) {
-            summary += "\n" + cause + " : " + causeCounts.get(cause);
+            summary.append("\n").append(cause).append(" : ").append(causeCounts.get(cause));
         }
         return summary + "\n================\n";
     }
