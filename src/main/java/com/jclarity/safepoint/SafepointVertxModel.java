@@ -7,6 +7,7 @@ import com.jclarity.safepoint.event.JVMEvent;
 import com.jclarity.safepoint.event.JVMEventCodec;
 import com.jclarity.safepoint.io.SafepointLogFile;
 import com.jclarity.safepoint.parser.SafepointParser;
+import com.jclarity.safepoint.web.WebView;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 
@@ -32,19 +33,24 @@ public class SafepointVertxModel extends AbstractSafepointModel {
         vertx.eventBus().registerDefaultCodec(JVMEvent.class, new JVMEventCodec());
         SafepointLogFile logFile = new SafepointLogFile(getSafepointLogFile());
 
+        DataSourceVerticlePublisher<String> dataSourcePublisher = new DataSourceVerticlePublisher<>("parser-inbox");
+        // This function trigger the reading of the log file and so start the event emission.
+        Runnable readAction = () -> reload(dataSourcePublisher, logFile);
         setupTermination(vertx)
+                .compose(v -> startWebView(vertx, readAction))
                 .compose(v -> deployAggregator(vertx))
                 .compose(v -> deployParser(vertx))
-                .compose(v -> deployAndStartEventSource(vertx, logFile));
+                .compose(v -> deployAndStartEventSource(vertx, dataSourcePublisher, readAction));
+    }
+
+    private Future<Void> startWebView(Vertx vertx, Runnable reload) {
+        return new WebView().initialize(vertx, reload);
     }
 
     private Future<Void> setupTermination(Vertx vertx) {
         Future<Void> registered = Future.future();
         vertx.eventBus()
-                .consumer("termination", msg -> {
-                    done.complete();
-                    vertx.close();
-                })
+                .consumer("termination", msg -> done.tryComplete())
                 .completionHandler(x -> registered.handle(x.mapEmpty()));
         return registered;
     }
@@ -56,18 +62,21 @@ public class SafepointVertxModel extends AbstractSafepointModel {
         return future;
     }
 
-    private Future<Void> deployAndStartEventSource(Vertx vertx, SafepointLogFile log) {
+    private Future<Void> deployAndStartEventSource(Vertx vertx, DataSourceVerticlePublisher<String> dataSourcePublisher, Runnable run) {
         Future<Void> future = Future.future();
-        DataSourceVerticlePublisher<String> dataSourcePublisher = new DataSourceVerticlePublisher<>("parser-inbox");
         vertx.deployVerticle(dataSourcePublisher, s -> {
             if (s.failed()) {
                 future.fail(s.cause());
             } else {
                 future.complete();
-                dataSourcePublisher.publish(log);
+                run.run();
             }
         });
         return future;
+    }
+
+    private void reload(DataSourceVerticlePublisher<String> dataSourcePublisher, SafepointLogFile log) {
+        dataSourcePublisher.publish(log);
     }
 
     private Future<Void> deployAggregator(Vertx vertx) {
