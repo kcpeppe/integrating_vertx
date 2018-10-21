@@ -73,7 +73,6 @@ public class SafepointParser implements EventSink<String> {
 
     private void leavingSafepointRegion(SafepointLogEntry logEntry, String logLine) {
         currentTime = logEntry.getTimeOfEvent();
-        noop();
     }
 
     private void safepointDetails(SafepointLogEntry logEntry, String logLine) {
@@ -89,8 +88,6 @@ public class SafepointParser implements EventSink<String> {
         eventTime = -1.0d;
         safepointCause = null;
     }
-
-    private void noop() {}
 
     @Override
     public void accept(String line) {

@@ -21,6 +21,11 @@ public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEven
         aggregators.add(aggregator);
     }
 
+    public void addAggregators(Aggregator ... aggregator) {
+        for (Aggregator anAggregator : aggregator)
+            addAggregator(anAggregator);
+    }
+
     @Override
     public void accept(JVMEvent event) {
         aggregators.forEach(event::execute);

@@ -44,8 +44,6 @@ public class EventSourcePublisher extends AbstractVerticle {
         try {
             if (event != null) {
                 vertx.eventBus().publish(outbox, event, options);
-            } else {
-                System.out.println("Event is null, ignored!");
             }
         } catch (Exception t) {
             System.out.println(t.getMessage());
