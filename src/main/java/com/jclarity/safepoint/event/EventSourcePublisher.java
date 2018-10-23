@@ -4,11 +4,11 @@ import com.jclarity.safepoint.parser.SafepointParser;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.eventbus.Message;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-//public class EventSourcePublisher {
 public class EventSourcePublisher extends AbstractVerticle {
 
     private SafepointParser parser;
@@ -43,7 +43,7 @@ public class EventSourcePublisher extends AbstractVerticle {
     public void record(JVMEvent event) {
         try {
             if (event != null) {
-                vertx.eventBus().publish(outbox, event, options);
+                // TODO publish event to outbox with options
             }
         } catch (Exception t) {
             System.out.println(t.getMessage());
@@ -52,18 +52,20 @@ public class EventSourcePublisher extends AbstractVerticle {
 
     @Override
     public void start(Future<Void> future) {
-        vertx.eventBus().
-                <String>consumer(inbox, message -> {
-                    try {
-                        String body = message.body().trim();
-                        if (body.isEmpty()) {
-                            return;
-                        }
-                        parser.parse(body);
-                    } catch (Exception t) {
-                        System.out.println(t.getMessage());
-                    }
-                })
-                .completionHandler(v -> future.complete());
+        // TODO Register consumer (String) on inbox (process)
+        // TODO set completion handler
+
+    }
+
+    private void process(Message<String> message) {
+        try {
+            String body = message.body().trim();
+            if (body.isEmpty()) {
+                return;
+            }
+            parser.parse(body);
+        } catch (Exception t) {
+            System.out.println(t.getMessage());
+        }
     }
 }
