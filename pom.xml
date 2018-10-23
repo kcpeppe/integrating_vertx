@@ -36,11 +36,6 @@
             <!--<artifactId>vertx-hazelcast</artifactId>-->
             <!--<version>${vertx.version}</version>-->
         <!--</dependency>-->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>11-ea+19</version>
-        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
