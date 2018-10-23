@@ -9,7 +9,7 @@
     - publish
     - start         
     
-4. Aggregator
+4. AggregatorSet
     - start
     
 5. SafeVertxModel - boot sequence        

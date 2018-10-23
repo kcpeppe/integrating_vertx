@@ -40,7 +40,7 @@ public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEven
 
     @Override
     public void start(Future<Void> done) {
-        // TODO Register a consumer on inbox (<JWMEvent>)
+        // TODO Register a consumer on inbox (<JVMEvent>)
 
         // TODO set handler (process)
 
