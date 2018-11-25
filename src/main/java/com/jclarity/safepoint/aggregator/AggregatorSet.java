@@ -5,6 +5,7 @@ import com.jclarity.safepoint.event.JVMEvent;
 import com.jclarity.safepoint.event.JVMTermination;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageConsumer;
 
 import java.util.ArrayList;
@@ -39,19 +40,24 @@ public class AggregatorSet extends AbstractVerticle implements EventSink<JVMEven
 
     @Override
     public void start(Future<Void> done) {
-        MessageConsumer<JVMEvent> consumer = vertx.eventBus().consumer(inbox);
-        consumer.handler(message -> {
-            try {
-                JVMEvent event = message.body();
-                if (event instanceof JVMTermination) {
-                    // Send the termination signal
-                    vertx.eventBus().publish("termination", "Done");
-                } else {
-                    this.accept(event);
-                }
-            } catch (Exception t) {
-                System.out.println(t.getMessage());
+        // TODO Register a consumer on inbox (<JVMEvent>)
+
+        // TODO set handler (process)
+
+        // TODO Set completion handler
+    }
+
+    private void process(Message<JVMEvent> message) {
+        try {
+            JVMEvent event = message.body();
+            if (event instanceof JVMTermination) {
+                // Send the termination signal
+                vertx.eventBus().publish("termination", "Done");
+            } else {
+                this.accept(event);
             }
-        }).completionHandler(x -> done.complete());
+        } catch (Exception t) {
+            System.out.println(t.getMessage());
+        }
     }
 }
