@@ -16,7 +16,7 @@ public class SafepointVertxModel extends AbstractSafepointVertxModel {
 
     public void load() {
         Vertx vertx = Vertx.vertx();
-        vertx.eventBus().registerDefaultCodec(JVMEvent.class, new JVMEventCodec());
+        //vertx.eventBus().registerDefaultCodec(JVMEvent.class, new JVMEventCodec());
         SafepointLogFile logFile = new SafepointLogFile(getSafepointLogFile());
 
         DataSourceVerticlePublisher<String> dataSourcePublisher = new DataSourceVerticlePublisher<>("parser-inbox");

@@ -20,7 +20,7 @@ public abstract class AbstractSafepointVertxModel extends AbstractSafepointModel
     /**
      * @return a future indicating when the processing has been completed.
      */
-    Future<Void> done() {
+    public Future<Void> done() {
         return done;
     }
 

@@ -8,7 +8,6 @@ import io.vertx.core.eventbus.DeliveryOptions;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-//public class EventSourcePublisher {
 public class EventSourcePublisher extends AbstractVerticle {
 
     private SafepointParser parser;

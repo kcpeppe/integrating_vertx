@@ -8,6 +8,9 @@ import com.jclarity.safepoint.event.Safepoint;
 import com.jclarity.safepoint.event.SafepointCause;
 import com.jclarity.safepoint.io.SafepointLogEntry;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Optional;
@@ -84,7 +87,13 @@ public class SafepointParser implements EventSink<String> {
     }
 
     private void record(JVMEvent event) {
-        outbox.offer(event);
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(event);
+            outbox.offer(event);
+            System.out.println(baos.size());
+        } catch (IOException ioe) {}
         eventTime = -1.0d;
         safepointCause = null;
     }

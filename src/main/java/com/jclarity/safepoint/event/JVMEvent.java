@@ -2,7 +2,9 @@ package com.jclarity.safepoint.event;
 
 import com.jclarity.safepoint.aggregator.Aggregator;
 
-public abstract class JVMEvent {
+import java.io.Serializable;
+
+public abstract class JVMEvent implements Serializable {
 
     private final double timeOfEvent;
     private final double duration;
