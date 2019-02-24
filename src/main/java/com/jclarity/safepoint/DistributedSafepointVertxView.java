@@ -1,7 +1,5 @@
 package com.jclarity.safepoint;
 
-import com.jclarity.safepoint.SafepointSharedView;
-import com.jclarity.safepoint.SafepointVertxModel;
 import javafx.application.Platform;
 import javafx.scene.control.TabPane;
 
@@ -21,7 +19,7 @@ public class DistributedSafepointVertxView extends SafepointSharedView {
         // Wait until the model is computed.
         model.done().setHandler(x ->
                 Platform.runLater(() ->
-                    buildViews(tabPane, model.getSafepointSummary(), model.getApplicationRuntimeSummary())
-        ));
+                        buildViews(tabPane, model.getSafepointSummary(), model.getApplicationRuntimeSummary())
+                ));
     }
 }
