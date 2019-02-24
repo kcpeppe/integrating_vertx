@@ -32,7 +32,8 @@ public class SafepointVertxWebModel extends AbstractSafepointVertxModel {
     }
 
     private Future<Void> startWebView(Vertx vertx, Runnable reload) {
-        return new WebView().initialize(vertx, reload);
+//        return new WebView().initialize(vertx, reload);
+        return null;
     }
 
     private void reload(DataSourceVerticlePublisher<String> dataSourcePublisher, SafepointLogFile log) {
