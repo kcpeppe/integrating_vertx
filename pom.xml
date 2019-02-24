@@ -125,6 +125,7 @@
                                         <Main-Class>com.kodewerk.safepoint.DistributedSafepointVertxView</Main-Class>
                                         <Main-Class>com.kodewerk.safepoint.SafepointVertxRemoteParser</Main-Class>-->
                                         <!--<Main-Class>com.kodewerk.safepoint.distributed.SafepointVertxRemoteDataSource</Main-Class>-->
+                                        <!--<Main-Class>com.jclarity.safepoint.distributed.SafepointVertxRemoteWebView</Main-Class>-->
                                     <!-- /manifestEntries>
                                 </transformer>
                             </transformers>

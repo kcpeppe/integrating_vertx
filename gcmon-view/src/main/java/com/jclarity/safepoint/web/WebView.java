@@ -4,58 +4,59 @@ import com.kodewerk.safepoint.event.JVMEvent;
 import com.kodewerk.safepoint.event.Safepoint;
 import com.kodewerk.safepoint.event.SafepointCause;
 import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
-import io.vertx.ext.bridge.PermittedOptions;
+import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.StaticHandler;
-import io.vertx.ext.web.handler.sockjs.BridgeOptions;
-import io.vertx.ext.web.handler.sockjs.SockJSHandler;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-public class WebView {
+public class WebView extends AbstractVerticle {
 
-    private Map<SafepointCause, Integer> causes = new HashMap<>();
+    private final static Logger LOG = Logger.getLogger(WebView.class.getName());
 
-    public Future<Void> initialize(Vertx vertx, Runnable reload) {
-        Future<Void> future = Future.future();
+    private Map<JVMEvent, Integer> causes = new HashMap<>();
+
+    @Override
+    public void start(Future<Void> future) {
         Router router = Router.router(vertx);
 
         vertx.eventBus().<JVMEvent>consumer("aggregator-inbox", msg -> {
             JVMEvent event = msg.body();
-            if (event instanceof Safepoint) {
-                SafepointCause cause = ((Safepoint) event).getSafepointCause();
-                causes.put(cause, causes.getOrDefault(cause, 0) + 1);
-            }
+            causes.put(event, causes.getOrDefault(event, 0) + 1);
         });
 
-        vertx.setPeriodic(100, x -> {
-            JsonObject json = new JsonObject();
-            causes.forEach((c, i) -> json.put(c.name(), i));
-            vertx.eventBus().publish("safepoints", json);
-        });
+        router.route("/events/*").handler(routingContext -> {
+            HttpServerResponse response = routingContext.response();
+            final String content = buildContent(causes);
+            response.putHeader("content-type", "text/html").end("<h1>Events</h1><br>" + content);
 
-        BridgeOptions options = new BridgeOptions();
-        options.setOutboundPermitted(Collections.singletonList(new PermittedOptions()
-                .setAddress("safepoints")));
-        router.route("/reload").handler(rc -> {
-            causes.forEach((c, v) -> causes.put(c, 0));
-            // Just here to clear the graph to better see the event flow
-            vertx.setTimer(1000, x -> {
-                reload.run();
-                rc.response().end("Replaying events");
-            });
         });
-        router.route("/eventbus/*").handler(SockJSHandler.create(vertx).bridge(options));
-        router.route().handler(StaticHandler.create());
 
         vertx.createHttpServer()
                 .requestHandler(router::accept)
-                .listen(8080, ar -> future.handle(ar.mapEmpty()));
-        return future;
+                .listen(8080, result -> {
+                    if (result.succeeded()) {
+                        LOG.info("HTTP server running on port 8080");
+                        future.complete();
+                    } else {
+                        LOG.severe(() -> "Could not start a HTTP server: " + result.cause());
+                        future.fail(result.cause());
+                    }
+                });
+    }
+
+    private static String buildContent(Map<JVMEvent, Integer> causes) {
+        return "<ul><li>"
+                + causes.entrySet().stream()
+                .map(e -> buildEvent(e.getKey()) + ": " + e.getValue())
+                .collect(Collectors.joining("</li><li>"))
+                + "</li></ul>";
+    }
+
+    private static String buildEvent(JVMEvent event) {
+        return event.toString() + ", " + event.getDuration() + ", " + event.getEventTime();
     }
 
 
