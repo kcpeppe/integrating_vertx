@@ -5,7 +5,9 @@ import com.kodewerk.safepoint.event.EventConsumer;
 import com.kodewerk.safepoint.event.JVMTermination;
 import com.kodewerk.safepoint.event.Safepoint;
 
-public abstract class Aggregator implements EventConsumer {
+import java.io.Serializable;
+
+public abstract class Aggregator implements EventConsumer, Serializable {
 
     private double timeOfFirstEvent = Double.MAX_VALUE;
     private double timeOfLastEvent = 0.0d;
