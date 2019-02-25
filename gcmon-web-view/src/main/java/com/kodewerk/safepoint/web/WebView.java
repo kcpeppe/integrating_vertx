@@ -1,14 +1,13 @@
 package com.kodewerk.safepoint.web;
 
 import com.kodewerk.safepoint.event.JVMEvent;
-import com.kodewerk.safepoint.event.Safepoint;
-import com.kodewerk.safepoint.event.SafepointCause;
+import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.Router;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -16,7 +15,7 @@ public class WebView extends AbstractVerticle {
 
     private final static Logger LOG = Logger.getLogger(WebView.class.getName());
 
-    private Map<JVMEvent, Integer> causes = new HashMap<>();
+    private Map<JVMEvent, Integer> causes = new ConcurrentHashMap<>();
 
     @Override
     public void start(Future<Void> future) {

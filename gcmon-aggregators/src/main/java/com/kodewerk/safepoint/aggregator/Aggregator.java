@@ -1,9 +1,6 @@
 package com.kodewerk.safepoint.aggregator;
 
-import com.kodewerk.safepoint.event.ApplicationRuntime;
-import com.kodewerk.safepoint.event.EventConsumer;
-import com.kodewerk.safepoint.event.JVMTermination;
-import com.kodewerk.safepoint.event.Safepoint;
+import com.kodewerk.safepoint.event.*;
 
 import java.io.Serializable;
 
@@ -21,6 +18,8 @@ public abstract class Aggregator implements EventConsumer, Serializable {
 
     public double getTimeOfFirstEvent() { return this.timeOfFirstEvent; }
     public double getTimeOfLastEvent() { return  this.timeOfLastEvent; }
+
+    public void accept(JVMEvent event) {}
 
     public void accept(Safepoint safepoint) {}
 

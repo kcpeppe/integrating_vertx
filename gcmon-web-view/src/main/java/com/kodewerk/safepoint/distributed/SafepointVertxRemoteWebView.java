@@ -1,8 +1,8 @@
-package com.jclarity.safepoint.distributed;
+package com.kodewerk.safepoint.distributed;
 
-import com.jclarity.safepoint.event.JVMEvent;
-import com.jclarity.safepoint.event.JVMEventCodec;
-import com.jclarity.safepoint.web.WebView;
+import com.kodewerk.safepoint.event.JVMEvent;
+import com.kodewerk.safepoint.event.JVMEventCodec;
+import com.kodewerk.safepoint.web.WebView;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
