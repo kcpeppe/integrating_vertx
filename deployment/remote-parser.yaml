@@ -14,6 +14,9 @@ spec:
         - name: remote-parser
           image: docker.sebastian-daschner.com/parser:1
           imagePullPolicy: Always
+          ports:
+            - containerPort: 5701
+              name: hazelcast
       imagePullSecrets:
         - name: regsecret
       restartPolicy: Always

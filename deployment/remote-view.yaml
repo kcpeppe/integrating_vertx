@@ -8,8 +8,8 @@ spec:
   selector:
     app: remote-view
   ports:
-    - port: 8080
-      name: http
+  - port: 8080
+    name: http
   type: LoadBalancer
 ---
 
@@ -29,6 +29,11 @@ spec:
         - name: remote-view
           image: docker.sebastian-daschner.com/web-view:1
           imagePullPolicy: Always
+          ports:
+            - containerPort: 5701
+              name: hazelcast
+            - containerPort: 8080
+              name: http
       imagePullSecrets:
         - name: regsecret
       restartPolicy: Always

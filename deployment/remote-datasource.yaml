@@ -14,6 +14,9 @@ spec:
         - name: remote-datasource
           image: docker.sebastian-daschner.com/datasource:1
           imagePullPolicy: Always
+          ports:
+            - containerPort: 5701
+              name: hazelcast
       imagePullSecrets:
         - name: regsecret
       restartPolicy: Always

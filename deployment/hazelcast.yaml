@@ -6,34 +6,12 @@ metadata:
   name: hazelcast
 spec:
   ports:
-  - name: hz-port-name
+  - name: hazelcast
     port: 5701
-    protocol: TCP
+    targetPort: 5701
   selector:
     component: hazelcast
   clusterIP: None
   type: ClusterIP
 ---
 
-#apiVersion: extensions/v1beta1
-#kind: Deployment
-#metadata:
-#  name: hazelcast
-#  labels:
-#    app: hazelcast
-#spec:
-#  template:
-#    metadata:
-#      labels:
-#        app: hazelcast
-#    spec:
-#      containers:
-#      - name: hazelcast
-#        image: quay.io/pires/hazelcast-kubernetes:3.9.3
-#        imagePullPolicy: Always
-#        env:
-#        - name: "DNS_DOMAIN"
-#          value: "cluster.local"
-#        ports:
-#        - name: hazelcast
-#          containerPort: 5701
