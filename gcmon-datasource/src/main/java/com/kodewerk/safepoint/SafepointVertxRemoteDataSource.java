@@ -1,15 +1,11 @@
 package com.kodewerk.safepoint;
 
 import com.kodewerk.safepoint.io.DataSourcePublisher;
-import com.kodewerk.safepoint.io.SafepointLogFile;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
-
-import java.io.File;
-import java.nio.file.Path;
 
 public class SafepointVertxRemoteDataSource {
 
@@ -17,16 +13,10 @@ public class SafepointVertxRemoteDataSource {
         new SafepointVertxRemoteDataSource().load();
     }
 
-    Future<Void> deployAndStartEventSource(Vertx vertx, DataSourcePublisher<String> dataSourcePublisher, Runnable run) {
+    Future<Void> deployAndStartEventSource(Vertx vertx) {
         Future<Void> future = Future.future();
-        vertx.deployVerticle(dataSourcePublisher, s -> {
-            if (s.failed()) {
-                future.fail(s.cause());
-            } else {
-                future.complete();
-                run.run();
-            }
-        });
+        DataSourcePublisher publisher = new DataSourcePublisher("datasource", "parser-inbox");
+        vertx.deployVerticle(publisher, s -> future.handle(s.mapEmpty()));
         return future;
     }
 
@@ -35,13 +25,7 @@ public class SafepointVertxRemoteDataSource {
         VertxOptions options = new VertxOptions().setClusterManager(mgr);
         Vertx.clusteredVertx(options, cluster -> {
             if (cluster.succeeded()) {
-                Path path = new File("./logs/safepoint.log").toPath();
-                SafepointLogFile logFile = new SafepointLogFile(path);
-
-                DataSourcePublisher<String> dataSourcePublisher = new DataSourcePublisher<>("parser-inbox");
-                // This function trigger the reading of the log file and so start the event emission.
-                Runnable readAction = () -> dataSourcePublisher.publish(logFile);
-                deployAndStartEventSource(cluster.result(), dataSourcePublisher, readAction);
+                deployAndStartEventSource(cluster.result());
             } else {
                 System.out.println("Cluster up failed: " + cluster.cause());
             }

@@ -3,7 +3,6 @@ package com.kodewerk.safepoint;
 import com.kodewerk.safepoint.io.ApplicationRuntimeSummaryCodec;
 import com.kodewerk.safepoint.io.SafepointSummaryCodec;
 import com.kodewerk.safepoint.web.Web;
-import com.kodewerk.safepoint.web.WebSandbox;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -33,10 +32,8 @@ public class SafepointVertxRemoteWeb {
 
     private Future<Void> deployView(Vertx vertx) {
         Future<Void> future = Future.future();
-        //Web webView = new Web();
-        WebSandbox sandbox = new WebSandbox();
-        //vertx.deployVerticle(webView, s -> future.handle(s.mapEmpty()));
-        vertx.deployVerticle(sandbox, s -> future.handle(s.mapEmpty()));
+        Web webView = new Web();
+        vertx.deployVerticle(webView, s -> future.handle(s.mapEmpty()));
         return future;
     }
 
