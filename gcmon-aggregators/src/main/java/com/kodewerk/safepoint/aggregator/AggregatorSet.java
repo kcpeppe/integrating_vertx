@@ -1,20 +1,16 @@
 package com.kodewerk.safepoint.aggregator;
 
 import com.kodewerk.safepoint.event.JVMEvent;
-import com.kodewerk.safepoint.event.JVMTermination;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Future;
-import io.vertx.core.eventbus.MessageConsumer;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
-public class AggregatorSet extends AbstractVerticle {
+public class AggregatorSet {
 
     private final ArrayList<Aggregator> aggregators = new ArrayList<>();
 
-    public AggregatorSet() {
+    public AggregatorSet() {}
 
-    }
 
     public void addAggregator(Aggregator aggregator) {
         aggregators.add(aggregator);
@@ -29,27 +25,8 @@ public class AggregatorSet extends AbstractVerticle {
         aggregators.forEach(event::execute);
     }
 
-    private String inbox;
-
-    public AggregatorSet(String inbox) {
-        this.inbox = inbox;
-    }
-
-    @Override
-    public void start(Future<Void> done) {
-        MessageConsumer<JVMEvent> consumer = vertx.eventBus().consumer(inbox);
-        consumer.handler(message -> {
-            try {
-                JVMEvent event = message.body();
-                if (event instanceof JVMTermination) {
-                    // Send the termination signal
-                    vertx.eventBus().publish("termination", "Done");
-                } else {
-                    this.accept(event);
-                }
-            } catch (Exception t) {
-                System.out.println(t.getMessage());
-            }
-        }).completionHandler(x -> done.complete());
+    public void forEach(Consumer<Aggregator> action) {
+        aggregators.forEach(aggregator -> System.out.println(aggregator.toString()));
+        aggregators.forEach(action);
     }
 }

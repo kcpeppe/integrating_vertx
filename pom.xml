@@ -24,6 +24,7 @@
         <module>gcmon-datasource</module>
         <module>gcmon-parser</module>
         <module>gcmon-view</module>
+        <module>gcmon-web</module>
     </modules>
 
     <dependencyManagement>

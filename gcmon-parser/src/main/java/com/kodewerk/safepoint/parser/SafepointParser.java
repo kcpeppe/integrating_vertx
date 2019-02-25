@@ -19,7 +19,7 @@ import static com.kodewerk.safepoint.parser.SafepointRules.*;
 
 public class SafepointParser {
 
-    private EventConsumer outbox;
+    private JVMEventConsumer outbox;
     private double currentTime = 0.0d;
     private double eventTime = -1.0d;
     private SafepointCause safepointCause = null;
@@ -37,11 +37,11 @@ public class SafepointParser {
 
     public SafepointParser() {}
 
-    public SafepointParser(EventConsumer outBox) {
+    public SafepointParser(JVMEventConsumer outBox) {
         this.outbox = outBox;
     }
 
-    public void setEventConsumer(EventConsumer outbox) {
+    public void setEventConsumer(JVMEventConsumer outbox) {
         this.outbox = outbox;
     }
 
@@ -91,7 +91,6 @@ public class SafepointParser {
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(event);
             outbox.offer(event);
-            System.out.println(baos.size());
         } catch (IOException ioe) {}
         eventTime = -1.0d;
         safepointCause = null;

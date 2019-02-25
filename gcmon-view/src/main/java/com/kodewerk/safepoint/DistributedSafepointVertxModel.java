@@ -1,7 +1,7 @@
 package com.kodewerk.safepoint;
 
 import com.kodewerk.safepoint.event.JVMEvent;
-import com.kodewerk.safepoint.event.JVMEventCodec;
+import com.kodewerk.safepoint.io.JVMEventCodec;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.spi.cluster.ClusterManager;

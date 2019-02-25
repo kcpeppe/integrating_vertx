@@ -1,7 +1,7 @@
 package com.kodewerk.safepoint;
 
 import com.kodewerk.safepoint.event.JVMEvent;
-import com.kodewerk.safepoint.event.JVMEventCodec;
+import com.kodewerk.safepoint.io.JVMEventCodec;
 import com.kodewerk.safepoint.io.DataSourcePublisher;
 import com.kodewerk.safepoint.io.SafepointLogFile;
 import io.vertx.core.Future;

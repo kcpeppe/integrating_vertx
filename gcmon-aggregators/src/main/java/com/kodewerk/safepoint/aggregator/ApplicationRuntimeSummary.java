@@ -19,10 +19,6 @@ public class ApplicationRuntimeSummary extends Aggregator {
         totalRunTime += event.getDuration();
     }
 
-    public void record(Safepoint event) {
-        recordTimeOfEvent(event.getEventTime());
-    }
-
     public String toString() {
         return "Application Runtime Summary\n---------------------------\nTotal Runtime: "
                 + getTotalRunTime()

@@ -27,4 +27,6 @@ public abstract class Aggregator implements EventConsumer, Serializable {
 
     public void accept(JVMTermination termination) {}
 
+    public abstract String toString();
+
 }

@@ -3,8 +3,11 @@ package com.kodewerk.safepoint;
 import com.kodewerk.safepoint.aggregator.AggregatorSet;
 import com.kodewerk.safepoint.aggregator.ApplicationRuntimeSummary;
 import com.kodewerk.safepoint.aggregator.SafepointSummary;
+import com.kodewerk.safepoint.event.ApplicationRuntime;
 import com.kodewerk.safepoint.event.JVMEvent;
-import com.kodewerk.safepoint.event.JVMEventCodec;
+import com.kodewerk.safepoint.io.ApplicationRuntimeSummaryCodec;
+import com.kodewerk.safepoint.io.SafepointSummaryCodec;
+import com.kodewerk.safepoint.io.JVMEventCodec;
 import com.kodewerk.safepoint.event.JVMEventAggregators;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -23,7 +26,7 @@ public class SafepointVertxAggregators {
 
     Future<Void> deployAggregators(Vertx vertx, AggregatorSet aggregators) {
         Future<Void> future = Future.future();
-        JVMEventAggregators consumer = new JVMEventAggregators("aggregator-inbox", aggregators);
+        JVMEventAggregators consumer = new JVMEventAggregators("aggregator-inbox", "web-inbox", aggregators);
         vertx.deployVerticle(consumer, s -> future.handle(s.mapEmpty()));
         return future;
     }
@@ -33,7 +36,9 @@ public class SafepointVertxAggregators {
         VertxOptions options = new VertxOptions().setClusterManager(mgr);
         Vertx.clusteredVertx(options, cluster -> {
             if (cluster.succeeded()) {
-                cluster.result().eventBus().registerDefaultCodec(JVMEvent.class, new JVMEventCodec());
+                cluster.result().eventBus().registerCodec(new JVMEventCodec());
+                cluster.result().eventBus().registerCodec(new ApplicationRuntimeSummaryCodec());
+                cluster.result().eventBus().registerCodec(new SafepointSummaryCodec());
                 deployAggregators(cluster.result(), aggregators);
             } else {
                 System.out.println("Cluster up failed: " + cluster.cause());

@@ -2,7 +2,7 @@ package com.kodewerk.safepoint;
 
 import com.kodewerk.safepoint.event.EventSourcePublisher;
 import com.kodewerk.safepoint.event.JVMEvent;
-import com.kodewerk.safepoint.event.JVMEventCodec;
+import com.kodewerk.safepoint.io.JVMEventCodec;
 import com.kodewerk.safepoint.parser.SafepointParser;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;

@@ -39,11 +39,7 @@ public class SafepointSummary extends Aggregator {
         timeSeries.add(new DataPoint(timeStamp,value));
     }
 
-    public void accept(ApplicationRuntime event) {
-        recordTimeOfEvent(event.getEventTime());
-    }
-
-    public void record(Safepoint event) {
+    public void accept(Safepoint event) {
         recordTimeOfEvent(event.getEventTime());
         countSafepointCause(event.getSafepointCause());
         add(pauseTimeSeries,event.getSafepointCause(), event.getEventTime(),event.getDuration());
