@@ -9,6 +9,7 @@ import com.kodewerk.safepoint.io.ApplicationRuntimeSummaryCodec;
 import com.kodewerk.safepoint.io.SafepointSummaryCodec;
 import com.kodewerk.safepoint.io.JVMEventCodec;
 import com.kodewerk.safepoint.event.JVMEventAggregators;
+import com.kodewerk.safepoint.event.JVMEventCodec;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
