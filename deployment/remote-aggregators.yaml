@@ -14,6 +14,9 @@ spec:
         - name: remote-aggregators
           image: docker.sebastian-daschner.com/aggregators:1
           imagePullPolicy: Always
+          ports:
+            - containerPort: 5701
+              name: hazelcast
       imagePullSecrets:
         - name: regsecret
       restartPolicy: Always
