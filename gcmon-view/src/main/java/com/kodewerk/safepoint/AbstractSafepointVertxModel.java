@@ -1,8 +1,8 @@
 package com.kodewerk.safepoint;
 
 import com.kodewerk.safepoint.aggregator.AggregatorSet;
-import com.kodewerk.safepoint.event.DataSourceVerticlePublisher;
 import com.kodewerk.safepoint.event.EventSourcePublisher;
+import com.kodewerk.safepoint.io.DataSourcePublisher;
 import com.kodewerk.safepoint.parser.SafepointParser;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -39,7 +39,7 @@ public abstract class AbstractSafepointVertxModel extends AbstractSafepointModel
         return future;
     }
 
-    Future<Void> deployAndStartEventSource(Vertx vertx, DataSourceVerticlePublisher<String> dataSourcePublisher, Runnable run) {
+    Future<Void> deployAndStartEventSource(Vertx vertx, DataSourcePublisher<String> dataSourcePublisher, Runnable run) {
         Future<Void> future = Future.future();
         vertx.deployVerticle(dataSourcePublisher, s -> {
             if (s.failed()) {
@@ -55,7 +55,7 @@ public abstract class AbstractSafepointVertxModel extends AbstractSafepointModel
     Future<Void> deployAggregator(Vertx vertx) {
         Future<Void> future = Future.future();
         AggregatorSet aggregators = new AggregatorSet("aggregator-inbox");
-        aggregators.addAggregators(getSafepointSummary(),getApplicationRuntimeSummary());
+        aggregators.addAggregators(getSafepointSummary(), getApplicationRuntimeSummary());
         vertx.deployVerticle(aggregators, s -> future.handle(s.mapEmpty()));
         return future;
     }

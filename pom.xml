@@ -14,14 +14,40 @@
         <vertx.version>3.5.4</vertx.version>
         <junit.version>5.3.1</junit.version>
         <hazelcast-kubernetes.version>1.3.1</hazelcast-kubernetes.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <modules>
+        <module>gcmon-aggregators</module>
         <module>gcmon-core</module>
+        <module>gcmon-datasource</module>
+        <module>gcmon-parser</module>
+        <module>gcmon-view</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.kodewerk.gcmon</groupId>
+                <artifactId>gcmon-core</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kodewerk.gcmon</groupId>
+                <artifactId>gcmon-aggregators</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kodewerk.gcmon</groupId>
+                <artifactId>gcmon-datasource</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kodewerk.gcmon</groupId>
+                <artifactId>gcmon-parser</artifactId>
+                <version>1.0</version>
+            </dependency>
 
             <dependency>
                 <groupId>io.vertx</groupId>
@@ -122,10 +148,10 @@
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.kodewerk.safepoint.DistributedSafepointVertxView</Main-Class>
+                                        <Main-Class>DistributedSafepointVertxView</Main-Class>
                                         <Main-Class>com.kodewerk.safepoint.SafepointVertxRemoteParser</Main-Class>-->
                                         <!--<Main-Class>com.kodewerk.safepoint.distributed.SafepointVertxRemoteDataSource</Main-Class>-->
-                                        <!--<Main-Class>com.jclarity.safepoint.distributed.SafepointVertxRemoteWebView</Main-Class>-->
+                                        <!--<Main-Class>SafepointVertxRemoteWebView</Main-Class>-->
                                     <!-- /manifestEntries>
                                 </transformer>
                             </transformers>
