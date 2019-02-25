@@ -1,6 +1,7 @@
 package com.kodewerk.safepoint.aggregator;
 
 import com.kodewerk.safepoint.event.ApplicationRuntime;
+import com.kodewerk.safepoint.event.JVMTermination;
 import com.kodewerk.safepoint.event.Safepoint;
 
 import java.util.ArrayList;
@@ -18,6 +19,10 @@ public class ApplicationRuntimeSummary extends Aggregator {
         runtimeSeries.add( new DataPoint(event.getEventTime(), event.getDuration()));
         totalRunTime += event.getDuration();
     }
+
+    public void accept(Safepoint safepoint) {}
+
+    public void accept(JVMTermination termination) {}
 
     public String toString() {
         return "Application Runtime Summary\n---------------------------\nTotal Runtime: "

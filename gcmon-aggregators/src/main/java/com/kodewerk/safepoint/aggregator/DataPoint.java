@@ -1,6 +1,8 @@
 package com.kodewerk.safepoint.aggregator;
 
-public class DataPoint {
+import java.io.Serializable;
+
+public class DataPoint implements Serializable {
 
     private final double eventTime;
     private final double eventDuration;

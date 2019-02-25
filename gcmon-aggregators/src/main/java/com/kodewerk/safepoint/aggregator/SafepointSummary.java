@@ -1,6 +1,7 @@
 package com.kodewerk.safepoint.aggregator;
 
 import com.kodewerk.safepoint.event.ApplicationRuntime;
+import com.kodewerk.safepoint.event.JVMTermination;
 import com.kodewerk.safepoint.event.Safepoint;
 import com.kodewerk.safepoint.event.SafepointCause;
 
@@ -51,6 +52,10 @@ public class SafepointSummary extends Aggregator {
         if ( event.getTimeToSafepoint() > longestTTSP)
             longestTTSP = event.getTimeToSafepoint();
     }
+
+    public void accept(ApplicationRuntime applicationRuntime) {}
+
+    public void accept(JVMTermination termination) {}
 
     public String toString() {
         StringBuilder summary = new StringBuilder("SafepointSummary\n----------------\nTotal Pause Time: " + getTotalPauseTime());
