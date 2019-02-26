@@ -3,6 +3,8 @@ package com.kodewerk.safepoint;
 import com.kodewerk.safepoint.event.EventSourcePublisher;
 import com.kodewerk.safepoint.event.JVMEvent;
 import com.kodewerk.safepoint.io.JVMEventCodec;
+import com.kodewerk.safepoint.io.SafepointLogLine;
+import com.kodewerk.safepoint.io.SafepointLogLineCodec;
 import com.kodewerk.safepoint.parser.SafepointParser;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -28,7 +30,8 @@ public class SafepointVertxRemoteParser {
         VertxOptions options = new VertxOptions().setClusterManager(mgr);
         Vertx.clusteredVertx(options, cluster -> {
             if (cluster.succeeded()) {
-                cluster.result().eventBus().registerDefaultCodec(JVMEvent.class, new JVMEventCodec());
+                cluster.result().eventBus().registerCodec(new JVMEventCodec());
+                cluster.result().eventBus().registerCodec(new SafepointLogLineCodec());
                 deployParser(cluster.result());
             } else {
                 System.out.println("Cluster up failed: " + cluster.cause());

@@ -1,5 +1,6 @@
 package com.kodewerk.safepoint.parser;
 
+import com.kodewerk.safepoint.event.JVMStart;
 import com.kodewerk.safepoint.event.JVMTermination;
 
 public interface SafepointRules extends Tokens {
@@ -17,5 +18,6 @@ public interface SafepointRules extends Tokens {
     SafepointParseRule SAFEPOINT_DETAILS = new SafepointParseRule("Total safepoint time",
             "Total time for which application threads were stopped: " + TIME_STAMP + ", Stopping threads took: " + TIME_STAMP  + "$");
 
+    SafepointParseRule JVM_START = new SafepointParseRule("JVM Start", JVMStart.JVM_START);
     SafepointParseRule JVM_TERMINATION = new SafepointParseRule("JVM Termination", JVMTermination.JVM_TERMINATION);
 }

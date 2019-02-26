@@ -20,10 +20,6 @@ public class ApplicationRuntimeSummary extends Aggregator {
         totalRunTime += event.getDuration();
     }
 
-    public void accept(Safepoint safepoint) {}
-
-    public void accept(JVMTermination termination) {}
-
     public String toString() {
         return "Application Runtime Summary\n---------------------------\nTotal Runtime: "
                 + getTotalRunTime()

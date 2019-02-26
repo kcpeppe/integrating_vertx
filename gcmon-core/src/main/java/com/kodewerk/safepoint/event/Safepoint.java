@@ -4,8 +4,8 @@ public class Safepoint extends JVMEvent {
 
     private final SafepointCause safepointCause;
     private final double timeToSafepoint;
-    public Safepoint(double timeOfEvent, SafepointCause cause, double ttsp, double duration) {
-        super( timeOfEvent, duration);
+    public Safepoint(String sessionID, double timeOfEvent, SafepointCause cause, double ttsp, double duration) {
+        super( sessionID, timeOfEvent, duration);
         this.safepointCause = cause;
         this.timeToSafepoint = ttsp;
     }

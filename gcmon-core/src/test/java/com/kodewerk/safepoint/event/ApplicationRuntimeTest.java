@@ -8,7 +8,7 @@ public class ApplicationRuntimeTest {
 
     @Test
     public void testForProperlyConstructedApplicationRuntime() {
-        ApplicationRuntime applicationRuntime = new ApplicationRuntime(1.0,2.0);
+        ApplicationRuntime applicationRuntime = new ApplicationRuntime("testing",1.0,2.0);
         assertEquals(1.0d, applicationRuntime.getEventTime(), "event timestamp differs ");
         assertEquals(2.0d, applicationRuntime.getDuration(), "event duration differs ");
     }

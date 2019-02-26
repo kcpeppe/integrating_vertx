@@ -26,7 +26,6 @@ public class AggregatorSet {
     }
 
     public void forEach(Consumer<Aggregator> action) {
-        aggregators.forEach(aggregator -> System.out.println(aggregator.toString()));
         aggregators.forEach(action);
     }
 }

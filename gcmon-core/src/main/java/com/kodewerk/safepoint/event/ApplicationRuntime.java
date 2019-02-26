@@ -2,8 +2,8 @@ package com.kodewerk.safepoint.event;
 
 public class ApplicationRuntime extends JVMEvent {
 
-    public ApplicationRuntime(double timeOfEvent, double duration) {
-        super(timeOfEvent,duration);
+    public ApplicationRuntime(String sessionID, double timeOfEvent, double duration) {
+        super(sessionID, timeOfEvent, duration);
     }
 
     public void execute(EventConsumer eventConsumer) {

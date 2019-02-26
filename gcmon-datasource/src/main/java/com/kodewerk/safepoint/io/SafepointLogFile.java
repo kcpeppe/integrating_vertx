@@ -10,6 +10,8 @@ import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import static com.kodewerk.safepoint.event.JVMStart.JVM_START;
 import static com.kodewerk.safepoint.event.JVMTermination.JVM_TERMINATION;
 
 public class SafepointLogFile implements DataSource<String> {
@@ -21,6 +23,9 @@ public class SafepointLogFile implements DataSource<String> {
         this.path = path;
         this.metadata = new LogSourceFormatMetaData(path);
     }
+
+    @Override
+    public String startToken() { return JVM_START; }
 
     @Override
     public String eosToken() {

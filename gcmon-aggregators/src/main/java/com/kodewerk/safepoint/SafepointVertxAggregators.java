@@ -1,10 +1,5 @@
 package com.kodewerk.safepoint;
 
-import com.kodewerk.safepoint.aggregator.AggregatorSet;
-import com.kodewerk.safepoint.aggregator.ApplicationRuntimeSummary;
-import com.kodewerk.safepoint.aggregator.SafepointSummary;
-import com.kodewerk.safepoint.event.ApplicationRuntime;
-import com.kodewerk.safepoint.event.JVMEvent;
 import com.kodewerk.safepoint.io.ApplicationRuntimeSummaryCodec;
 import com.kodewerk.safepoint.io.SafepointSummaryCodec;
 import com.kodewerk.safepoint.io.JVMEventCodec;
@@ -18,20 +13,17 @@ import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 public class SafepointVertxAggregators {
 
     public static void main(String[] args) {
-        AggregatorSet aggregators = new AggregatorSet();
-        aggregators.addAggregator(new ApplicationRuntimeSummary());
-        aggregators.addAggregator(new SafepointSummary());
-        new SafepointVertxAggregators().load(aggregators);
+        new SafepointVertxAggregators().load();
     }
 
-    Future<Void> deployAggregators(Vertx vertx, AggregatorSet aggregators) {
+    Future<Void> deployAggregators(Vertx vertx) {
         Future<Void> future = Future.future();
-        JVMEventAggregators consumer = new JVMEventAggregators("aggregator-inbox", "web-inbox", aggregators);
+        JVMEventAggregators consumer = new JVMEventAggregators("aggregator-inbox", "web-inbox");
         vertx.deployVerticle(consumer, s -> future.handle(s.mapEmpty()));
         return future;
     }
 
-    public void load(AggregatorSet aggregators) {
+    public void load() {
         ClusterManager mgr = new HazelcastClusterManager();
         VertxOptions options = new VertxOptions().setClusterManager(mgr);
         Vertx.clusteredVertx(options, cluster -> {
@@ -39,7 +31,7 @@ public class SafepointVertxAggregators {
                 cluster.result().eventBus().registerCodec(new JVMEventCodec());
                 cluster.result().eventBus().registerCodec(new ApplicationRuntimeSummaryCodec());
                 cluster.result().eventBus().registerCodec(new SafepointSummaryCodec());
-                deployAggregators(cluster.result(), aggregators);
+                deployAggregators(cluster.result());
             } else {
                 System.out.println("Cluster up failed: " + cluster.cause());
             }

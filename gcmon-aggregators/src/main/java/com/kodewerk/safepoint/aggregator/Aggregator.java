@@ -19,11 +19,13 @@ public abstract class Aggregator implements EventConsumer, Serializable {
     public double getTimeOfFirstEvent() { return this.timeOfFirstEvent; }
     public double getTimeOfLastEvent() { return  this.timeOfLastEvent; }
 
-    public void accept(Safepoint safepoint) {}
+    public void accept(Safepoint safepointEvent) {}
 
-    public void accept(ApplicationRuntime applicationRuntime) {}
+    public void accept(ApplicationRuntime applicationRuntimeEvent) {}
 
-    public void accept(JVMTermination termination) {}
+    public void accept(JVMTermination terminationEvent) {}
+
+    public void accept(JVMStart startEvent) {}
 
     public abstract String toString();
 

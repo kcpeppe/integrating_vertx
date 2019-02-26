@@ -1,5 +1,6 @@
 package com.kodewerk.safepoint.event;
 
+import com.kodewerk.safepoint.io.SafepointLogLine;
 import com.kodewerk.safepoint.parser.SafepointParser;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
@@ -37,10 +38,10 @@ public class EventSourcePublisher extends AbstractVerticle {
     @Override
     public void start(Future<Void> future) {
         vertx.eventBus().
-                <String>consumer(inbox, message -> {
+                <SafepointLogLine>consumer(inbox, message -> {
                     try {
-                        String body = message.body().trim();
-                        if (body.isEmpty()) {
+                        SafepointLogLine body = message.body();
+                        if (body == null) {
                             return;
                         }
                         parser.parse(body);

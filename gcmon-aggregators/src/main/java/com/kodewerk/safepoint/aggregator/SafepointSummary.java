@@ -53,10 +53,6 @@ public class SafepointSummary extends Aggregator {
             longestTTSP = event.getTimeToSafepoint();
     }
 
-    public void accept(ApplicationRuntime applicationRuntime) {}
-
-    public void accept(JVMTermination termination) {}
-
     public String toString() {
         StringBuilder summary = new StringBuilder("SafepointSummary\n----------------\nTotal Pause Time: " + getTotalPauseTime());
         summary.append("\nlongest pause: ").append(getLongestPause());
